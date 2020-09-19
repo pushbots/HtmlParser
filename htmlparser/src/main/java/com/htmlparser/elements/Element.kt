@@ -3,25 +3,26 @@ package com.htmlparser.elements
 import com.htmlparser.model.AnchorLink
 import com.htmlparser.model.DescriptionList
 
-sealed class Element
+sealed class Element(val type: Int)
 
-data class DescriptionListElement(val descriptionList: List<DescriptionList>) : Element()
-data class OrderListElement(val list: Pair<String, List<String>>) : Element()
-data class ImageElement(val ImageUrl: String) : Element()
-data class ParagraphElement(val paragraph: String) : Element()
-data class UnOrderListElement(val list: Pair<String, List<String>>) : Element()
-data class Heading1Element(val text: String) : Element()
-data class Heading2Element(val text: String) : Element()
-data class Heading3Element(val text: String) : Element()
-data class Heading4Element(val text: String) : Element()
-data class Heading5Element(val text: String) : Element()
-data class Heading6Element(val text: String) : Element()
-data class VideoElement(val videoSourceUrl: String, val videoThumbnailUrl: String = "") : Element()
-data class AudioElement(val audioSourceUrl: String) : Element()
-data class AnchorLinkElement(val anchorUrl: AnchorLink) : Element()
-data class BlockQuoteElement(val text: String) : Element()
-data class IFrameElement(val url: String) : Element()
-data class UnknownElement(val html:String) : Element()
+data class DescriptionListElement(val descriptionList: List<DescriptionList>) : Element(ElementType.DescriptionList.ordinal)
+data class OrderListElement(val list: Pair<String, List<String>>) : Element(ElementType.OrderedList.ordinal)
+data class ImageElement(val ImageUrl: String) : Element(ElementType.Image.ordinal)
+data class ParagraphElement(val paragraph: String) : Element(ElementType.Paragraph.ordinal)
+data class UnOrderListElement(val list: Pair<String, List<String>>) : Element(ElementType.UnorderedList.ordinal)
+data class Heading1Element(val text: String) : Element(ElementType.Heading1.ordinal)
+data class Heading2Element(val text: String) : Element(ElementType.Heading2.ordinal)
+data class Heading3Element(val text: String) : Element(ElementType.Heading3.ordinal)
+data class Heading4Element(val text: String) : Element(ElementType.Heading4.ordinal)
+data class Heading5Element(val text: String) : Element(ElementType.Heading5.ordinal)
+data class Heading6Element(val text: String) : Element(ElementType.Heading6.ordinal)
+data class VideoElement(val videoSourceUrl: String, val videoThumbnailUrl: String = "") : Element(ElementType.Video.ordinal)
+data class AudioElement(val audioSourceUrl: String) : Element(ElementType.Audio.ordinal)
+data class AnchorLinkElement(val anchorUrl: AnchorLink) : Element(ElementType.AnchorLink.ordinal)
+data class BlockQuoteElement(val data: String, val text: String) : Element(ElementType.BlockQuote.ordinal)
+data class IFrameElement(val data: String, val url: String) : Element(ElementType.IFrame.ordinal)
+data class UnknownElement(val html:String) : Element(ElementType.Unknown.ordinal)
+data class FigureElement(val caption: String, val url: String): Element(ElementType.Figure.ordinal)
 
 sealed class Paragraph
 

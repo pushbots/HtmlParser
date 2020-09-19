@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="onClick"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="content"
+            type="com.htmlparser.elements.IFrameElement" />
+    </data>
+
+<!--    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="@dimen/_4sdp"-->
+<!--        app:cardCornerRadius="@dimen/_4sdp"-->
+<!--        android:theme="@style/Theme.MaterialComponents.Light">-->
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{onClick}"
+            loadWebview="@{content.data}"/>
+
+<!--</com.google.android.material.card.MaterialCardView>-->
+
+</layout>

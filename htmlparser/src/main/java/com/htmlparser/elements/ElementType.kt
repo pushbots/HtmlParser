@@ -20,7 +20,8 @@ enum class ElementType(type: Int) {
     Div(16),
     Table(17),
     UnorderedList(18),
-    Section(19)
+    Section(19),
+    Figure(20)
 
 
 }

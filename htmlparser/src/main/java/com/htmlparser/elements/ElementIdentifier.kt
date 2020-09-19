@@ -28,13 +28,17 @@ class ElementIdentifier(private val element: Element) {
         "dl" -> ElementType.DescriptionList
         "div" -> ElementType.Div
         "section" -> ElementType.Section
+        "figure" -> ElementType.Figure
         else -> ElementType.Unknown
     }
 
 
     companion object {
         @JvmStatic
-        fun extractData(elementList: MutableList<com.htmlparser.elements.Element>, elements: Elements) {
+        fun extractData(
+            elementList: MutableList<com.htmlparser.elements.Element>,
+            elements: Elements
+        ) {
             elements.forEach {
                 when (ElementIdentifier(it).identify()) {
                     ElementType.Image -> {
@@ -85,7 +89,14 @@ class ElementIdentifier(private val element: Element) {
                     }
                     ElementType.AnchorLink -> {
                         val anchorLink = AnchorLinkExtractor(it).extract()
-                        elementList.add(AnchorLinkElement(AnchorLink(anchorLink.first, anchorLink.second)))
+                        elementList.add(
+                            AnchorLinkElement(
+                                AnchorLink(
+                                    anchorLink.first,
+                                    anchorLink.second
+                                )
+                            )
+                        )
                     }
                     ElementType.DescriptionList -> {
                         val extract = DescriptionListExtractor(it).extract()
@@ -96,33 +107,61 @@ class ElementIdentifier(private val element: Element) {
                         val descriptionListElement = DescriptionListElement(descriptionList)
                         elementList.add(descriptionListElement)
                     }
-                    ElementType.Div -> extractData(elementList, it.children())
+                    ElementType.Div -> {
+                        val children = it.children()
+                        if (children.size > 0 &&
+                            it.getElementsByClass("fb-post").isNotEmpty()
+                        ) {
+                            elementList.add(IFrameElement(it.toString(), it.toString()))
+                        } else {
+
+                            extractData(elementList, it.children())
+                        }
+
+                    }
                     ElementType.Paragraph -> {
                         val children = it.children()
                         if (children.size > 0 &&
                             it.getElementsByTag("img").isNotEmpty() ||
                             it.getElementsByTag("audio").isNotEmpty() ||
-                            it.getElementsByTag("video").isNotEmpty())
+                            it.getElementsByTag("video").isNotEmpty() ||
+                            it.getElementsByTag("iframe").isNotEmpty() ||
+                            it.getElementsByTag("blockquote").isNotEmpty()
+                        )
                             extractData(elementList, children)
                         else {
                             elementList.add(ParagraphElement(it.toString()))
                         }
                     }
                     ElementType.BlockQuote -> {
-                        elementList.add(BlockQuoteElement(it.text()))
+                        elementList.add(BlockQuoteElement(it.toString(), it.text()))
                     }
 
                     ElementType.IFrame -> {
-
+                        val iframe = IFrameExtractor(it).extract()
+                        elementList.add(IFrameElement(it.toString(), iframe))
                     }
                     ElementType.Audio -> {
                         val audio = AudioExtractor(it).extract()
                         elementList.add(AudioElement(audio))
                     }
                     ElementType.Unknown -> {
+                        val children = it.children()
+                        if (children.size > 0)
+                            extractData(elementList, children)
                         elementList.add(UnknownElement(it.toString()))
                     }
+
                     ElementType.Section -> extractData(elementList, it.children())
+
+                    ElementType.Figure -> {
+                        if (it.getElementsByClass("wp-block-embed-youtube").isNotEmpty()){
+                            elementList.add(IFrameElement(it.toString(), it.toString()))
+                        } else {
+                            val figure = FigureExtractor(it).extract()
+                            elementList.add(FigureElement(figure.first, figure.second))
+                        }
+                    }
                     else -> {
                         elementList.add(UnknownElement(it.toString()))
                     }
