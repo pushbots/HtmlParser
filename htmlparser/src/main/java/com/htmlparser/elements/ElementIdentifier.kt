@@ -47,41 +47,41 @@ class ElementIdentifier(private val element: Element) {
                     }
                     ElementType.Heading1 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading1Element(heading))
+                        elementList.add(Heading1Element(it.html(), heading))
 
                     }
                     ElementType.Heading2 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading2Element(heading))
+                        elementList.add(Heading2Element(it.html(), heading))
 
                     }
                     ElementType.Heading3 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading3Element(heading))
+                        elementList.add(Heading3Element(it.html(), heading))
 
                     }
                     ElementType.Heading4 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading4Element(heading))
+                        elementList.add(Heading4Element(it.html(), heading))
 
                     }
                     ElementType.Heading5 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading5Element(heading))
+                        elementList.add(Heading5Element(it.html(), heading))
 
                     }
                     ElementType.Heading6 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading6Element(heading))
+                        elementList.add(Heading6Element(it.html(), heading))
 
                     }
                     ElementType.UnorderedList -> {
                         val listExtractor = ListExtractor(it).extract()
-                        elementList.add(UnOrderListElement(listExtractor))
+                        elementList.add(UnOrderListElement(it.html(), listExtractor))
                     }
                     ElementType.OrderedList -> {
                         val listExtractor = ListExtractor(it).extract()
-                        elementList.add(OrderListElement(listExtractor))
+                        elementList.add(OrderListElement(it.html(), listExtractor))
                     }
                     ElementType.Video -> {
                         val videoUrl = VideoExtractor(it).extract()
