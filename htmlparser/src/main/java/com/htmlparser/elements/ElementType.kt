@@ -21,7 +21,8 @@ enum class ElementType(type: Int) {
     Table(17),
     UnorderedList(18),
     Section(19),
-    Figure(20)
+    Figure(20),
+    Br(21)
 
 
 }

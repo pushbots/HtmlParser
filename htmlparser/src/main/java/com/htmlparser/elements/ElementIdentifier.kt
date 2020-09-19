@@ -29,6 +29,7 @@ class ElementIdentifier(private val element: Element) {
         "div" -> ElementType.Div
         "section" -> ElementType.Section
         "figure" -> ElementType.Figure
+        "br" -> ElementType.Br
         else -> ElementType.Unknown
     }
 
@@ -88,15 +89,19 @@ class ElementIdentifier(private val element: Element) {
                         elementList.add(VideoElement(videoUrl))
                     }
                     ElementType.AnchorLink -> {
-                        val anchorLink = AnchorLinkExtractor(it).extract()
-                        elementList.add(
-                            AnchorLinkElement(
-                                AnchorLink(
-                                    anchorLink.first,
-                                    anchorLink.second
+                        if (it.getElementsByTag("img").isNotEmpty()) {
+                            extractData(elementList, it.children())
+                        } else {
+                            val anchorLink = AnchorLinkExtractor(it).extract()
+                            elementList.add(
+                                AnchorLinkElement(
+                                    AnchorLink(
+                                        anchorLink.first,
+                                        anchorLink.second
+                                    )
                                 )
                             )
-                        )
+                        }
                     }
                     ElementType.DescriptionList -> {
                         val extract = DescriptionListExtractor(it).extract()
@@ -161,6 +166,11 @@ class ElementIdentifier(private val element: Element) {
                             val figure = FigureExtractor(it).extract()
                             elementList.add(FigureElement(figure.first, figure.second))
                         }
+                    }
+
+                    ElementType.Br -> {
+                        // bind it as Paragraph for now
+                        elementList.add(ParagraphElement(it.toString()))
                     }
                     else -> {
                         elementList.add(UnknownElement(it.toString()))
