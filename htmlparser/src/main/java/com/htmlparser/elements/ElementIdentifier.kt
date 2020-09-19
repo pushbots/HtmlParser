@@ -132,9 +132,11 @@ class ElementIdentifier(private val element: Element) {
                             it.getElementsByTag("video").isNotEmpty() ||
                             it.getElementsByTag("iframe").isNotEmpty() ||
                             it.getElementsByTag("blockquote").isNotEmpty()
-                        )
+                        ) {
                             extractData(elementList, children)
-                        else {
+                            // sometimes <p still has some texts to get...
+                            if (it.hasText()) elementList.add(ParagraphElement(it.text()))
+                        } else {
                             elementList.add(ParagraphElement(it.toString()))
                         }
                     }
@@ -160,7 +162,7 @@ class ElementIdentifier(private val element: Element) {
                     ElementType.Section -> extractData(elementList, it.children())
 
                     ElementType.Figure -> {
-                        if (it.getElementsByClass("wp-block-embed-youtube").isNotEmpty()){
+                        if (it.getElementsByClass("wp-block-embed-youtube").isNotEmpty()) {
                             elementList.add(IFrameElement(it.toString(), it.toString()))
                         } else {
                             val figure = FigureExtractor(it).extract()
