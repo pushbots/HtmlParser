@@ -119,8 +119,27 @@ class ElementIdentifier(private val element: Element) {
                         ) {
                             elementList.add(IFrameElement(it.toString(), it.toString()))
                         } else {
-
                             extractData(elementList, it.children())
+                            // if has text need to be extracted!
+                            // todo find a better approach
+                            if (it.hasText()) {
+                                val anchors = it.getElementsByTag("a")
+                                var divText = it.text()
+
+                                anchors.forEach {
+                                    val anchorLink = AnchorLinkExtractor(it).extract()
+                                    divText = divText.replace(anchorLink.first, it.toString(), true)
+                                }
+
+                                elementList.forEach {
+                                    if (it is ParagraphElement)
+                                        if (divText.contains(it.paragraph))
+                                            return
+                                }
+                                if (anchors.size > 0)
+                                    elementList.add(ParagraphElement(divText))
+                                else elementList.add(ParagraphElement(it.toString()))
+                            }
                         }
 
                     }
