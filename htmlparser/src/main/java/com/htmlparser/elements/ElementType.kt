@@ -22,7 +22,10 @@ enum class ElementType(type: Int) {
     UnorderedList(18),
     Section(19),
     Figure(20),
-    Br(21)
+    Br(21),
+    Strong(22),
+    Span(23),
+    B(24)
 
 
 }

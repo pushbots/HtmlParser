@@ -30,6 +30,9 @@ class ElementIdentifier(private val element: Element) {
         "section" -> ElementType.Section
         "figure" -> ElementType.Figure
         "br" -> ElementType.Br
+        "strong" -> ElementType.Strong
+        "span" -> ElementType.Span
+        "b" -> ElementType.B
         else -> ElementType.Unknown
     }
 
@@ -38,9 +41,11 @@ class ElementIdentifier(private val element: Element) {
         @JvmStatic
         fun extractData(
             elementList: MutableList<com.htmlparser.elements.Element>,
-            elements: Elements
+            elements: Elements, wholeData: String = ""
         ) {
+            var wholeData = wholeData
             elements.forEach {
+                Log.d("Elements", "extractData: $wholeData")
                 when (ElementIdentifier(it).identify()) {
                     ElementType.Image -> {
                         val imageUrl = ImageExtractor(it).extract()
@@ -48,41 +53,41 @@ class ElementIdentifier(private val element: Element) {
                     }
                     ElementType.Heading1 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading1Element(it.html(), heading))
+                        elementList.add(Heading1Element(it.toString(), heading))
 
                     }
                     ElementType.Heading2 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading2Element(it.html(), heading))
+                        elementList.add(Heading2Element(it.toString(), heading))
 
                     }
                     ElementType.Heading3 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading3Element(it.html(), heading))
+                        elementList.add(Heading3Element(it.toString(), heading))
 
                     }
                     ElementType.Heading4 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading4Element(it.html(), heading))
+                        elementList.add(Heading4Element(it.toString(), heading))
 
                     }
                     ElementType.Heading5 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading5Element(it.html(), heading))
+                        elementList.add(Heading5Element(it.toString(), heading))
 
                     }
                     ElementType.Heading6 -> {
                         val heading = HeadingExtractor(it).extract()
-                        elementList.add(Heading6Element(it.html(), heading))
+                        elementList.add(Heading6Element(it.toString(), heading))
 
                     }
                     ElementType.UnorderedList -> {
                         val listExtractor = ListExtractor(it).extract()
-                        elementList.add(UnOrderListElement(it.html(), listExtractor))
+                        elementList.add(UnOrderListElement(it.toString(), listExtractor))
                     }
                     ElementType.OrderedList -> {
                         val listExtractor = ListExtractor(it).extract()
-                        elementList.add(OrderListElement(it.html(), listExtractor))
+                        elementList.add(OrderListElement(it.toString(), listExtractor))
                     }
                     ElementType.Video -> {
                         val videoUrl = VideoExtractor(it).extract()
@@ -90,7 +95,7 @@ class ElementIdentifier(private val element: Element) {
                     }
                     ElementType.AnchorLink -> {
                         if (it.getElementsByTag("img").isNotEmpty()) {
-                            extractData(elementList, it.children())
+                            extractData(elementList, it.children(), wholeData)
                         } else {
                             val anchorLink = AnchorLinkExtractor(it).extract()
                             elementList.add(
@@ -119,27 +124,29 @@ class ElementIdentifier(private val element: Element) {
                         ) {
                             elementList.add(IFrameElement(it.toString(), it.toString()))
                         } else {
-                            extractData(elementList, it.children())
+                            extractData(elementList, it.children(), wholeData)
                             // if has text need to be extracted!
                             // todo find a better approach
-                            if (it.hasText()) {
-                                val anchors = it.getElementsByTag("a")
-                                var divText = it.text()
-
-                                anchors.forEach {
-                                    val anchorLink = AnchorLinkExtractor(it).extract()
-                                    divText = divText.replace(anchorLink.first, it.toString(), true)
-                                }
-
-                                elementList.forEach {
-                                    if (it is ParagraphElement)
-                                        if (divText.contains(it.paragraph))
-                                            return
-                                }
-                                if (anchors.size > 0)
-                                    elementList.add(ParagraphElement(divText))
-                                else elementList.add(ParagraphElement(it.toString()))
-                            }
+//                            if (it.hasText()) {
+////                                val anchors = it.getElementsByTag("a")
+////                                var divText = it.text()
+////
+////                                anchors.forEach {
+////                                    val anchorLink = AnchorLinkExtractor(it).extract()
+////                                    divText = divText.replace(anchorLink.first, it.toString(), true)
+////                                }
+////
+////                                elementList.forEach {
+////                                    if (it is ParagraphElement)
+////                                        if (divText.contains(it.paragraph))
+////                                            return
+////                                }
+////                                if (anchors.size > 0)
+////                                    elementList.add(ParagraphElement(divText))
+//                                if (!wholeData.contains(it.text(), true))
+//                                    elementList.add(ParagraphElement(it.toString()))
+//                                wholeData += it.toString()
+//                            }
                         }
 
                     }
@@ -174,11 +181,11 @@ class ElementIdentifier(private val element: Element) {
                     ElementType.Unknown -> {
                         val children = it.children()
                         if (children.size > 0)
-                            extractData(elementList, children)
+                            extractData(elementList, children, wholeData)
                         elementList.add(UnknownElement(it.toString()))
                     }
 
-                    ElementType.Section -> extractData(elementList, it.children())
+                    ElementType.Section -> extractData(elementList, it.children(), wholeData)
 
                     ElementType.Figure -> {
                         if (it.getElementsByClass("wp-block-embed-youtube").isNotEmpty()) {
@@ -191,7 +198,8 @@ class ElementIdentifier(private val element: Element) {
 
                     ElementType.Br -> {
                         // bind it as Paragraph for now
-                        elementList.add(ParagraphElement(it.toString()))
+                        if (it.hasText())
+                            elementList.add(ParagraphElement(it.toString()))
                     }
                     else -> {
                         elementList.add(UnknownElement(it.toString()))
