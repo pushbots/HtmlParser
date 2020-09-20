@@ -124,6 +124,7 @@ class ElementIdentifier(private val element: Element) {
                         ) {
                             elementList.add(IFrameElement(it.toString(), it.toString()))
                         } else {
+                            if (it.childrenSize() <= 0 && it.hasText()) elementList.add(ParagraphElement(it.toString()))
                             extractData(elementList, it.children(), wholeData)
                             // if has text need to be extracted!
                             // todo find a better approach
