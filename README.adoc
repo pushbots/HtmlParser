@@ -10,7 +10,7 @@ image::https://api.bintray.com/packages/ibrahimali/HtmlParser/htmlparser/images/
 [source,groovy]
 .build.gralde
 ----
-implementation 'com.htmlparser:htmlparser:1.0.4'
+implementation 'com.htmlparser:htmlparser:1.0.6'
 ----
 
 <<<

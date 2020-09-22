@@ -3,7 +3,7 @@ package com.htmlparser.elements
 import com.htmlparser.model.AnchorLink
 import com.htmlparser.model.DescriptionList
 
-sealed class Element(val type: Int)
+open class Element(val type: Int)
 
 data class DescriptionListElement(val descriptionList: List<DescriptionList>) : Element(ElementType.DescriptionList.ordinal)
 data class OrderListElement(val html: String, val list: Pair<String, List<String>>) : Element(ElementType.OrderedList.ordinal)
