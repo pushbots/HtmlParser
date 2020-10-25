@@ -3,7 +3,7 @@
 An android library help you manage and parse HTML in easy and effective way.
 
 
-image::https://api.bintray.com/packages/ibrahimali/HtmlParser/htmlparser/images/download.svg?version=1.0.0[link="https://bintray.com/ibrahimali/HtmlParser/htmlparser/1.0.0/link"]
+image::https://api.bintray.com/packages/ibrahimali/HtmlParser/htmlparser/images/download.svg?version=1.0.6[link="https://bintray.com/ibrahimali/HtmlParser/htmlparser/1.0.6/link"]
 
 <<<
 <<<
