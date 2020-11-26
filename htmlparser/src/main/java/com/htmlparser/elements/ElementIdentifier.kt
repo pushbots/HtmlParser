@@ -33,6 +33,7 @@ class ElementIdentifier(private val element: Element) {
         "strong" -> ElementType.Strong
         "span" -> ElementType.Span
         "b" -> ElementType.B
+        "table" -> ElementType.Table
         else -> ElementType.Unknown
     }
 
@@ -202,6 +203,11 @@ class ElementIdentifier(private val element: Element) {
                         if (it.hasText())
                             elementList.add(ParagraphElement(it.toString()))
                     }
+
+                    ElementType.Table -> {
+                        elementList.add(Table(it.toString(), TableExtractor(it).extract()))
+                    }
+
                     else -> {
                         elementList.add(UnknownElement(it.toString()))
                     }
