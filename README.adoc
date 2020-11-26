@@ -3,14 +3,14 @@
 An android library help you manage and parse HTML in easy and effective way.
 
 
-image::https://api.bintray.com/packages/ibrahimali/HtmlParser/htmlparser/images/download.svg?version=1.0.6[link="https://bintray.com/ibrahimali/HtmlParser/htmlparser/1.0.6/link"]
+image::https://api.bintray.com/packages/ibrahimali/HtmlParser/htmlparser/images/download.svg?version=1.1.0[link="https://bintray.com/ibrahimali/HtmlParser/htmlparser/1.1.0/link"]
 
 <<<
 <<<
 [source,groovy]
 .build.gralde
 ----
-implementation 'com.htmlparser:htmlparser:1.0.6'
+implementation 'com.htmlparser:htmlparser:1.1.0'
 ----
 
 <<<

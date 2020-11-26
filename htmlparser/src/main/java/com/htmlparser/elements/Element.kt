@@ -24,7 +24,7 @@ data class BlockQuoteElement(val data: String, val text: String) : Element(Eleme
 data class IFrameElement(val data: String, val url: String) : Element(ElementType.IFrame.ordinal)
 data class UnknownElement(val html:String) : Element(ElementType.Unknown.ordinal)
 data class FigureElement(val caption: String, val url: String): Element(ElementType.Figure.ordinal)
-data class Table(val html: String, val table: Table) : Element(ElementType.Table.ordinal)
+data class TableElement(val html: String, val table: Table) : Element(ElementType.Table.ordinal)
 
 sealed class Paragraph
 

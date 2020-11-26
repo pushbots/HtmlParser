@@ -205,7 +205,7 @@ class ElementIdentifier(private val element: Element) {
                     }
 
                     ElementType.Table -> {
-                        elementList.add(Table(it.toString(), TableExtractor(it).extract()))
+                        elementList.add(TableElement(it.toString(), TableExtractor(it).extract()))
                     }
 
                     else -> {
