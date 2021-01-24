@@ -42,7 +42,8 @@ class ElementIdentifier(private val element: Element) {
         @JvmStatic
         fun extractData(
             elementList: MutableList<com.htmlparser.elements.Element>,
-            elements: Elements, wholeData: String = ""
+            elements: Elements, wholeData: String = "",
+            embeddedStyleEnabled: Boolean = true
         ) {
             var wholeData = wholeData
             elements.forEach {
@@ -125,7 +126,11 @@ class ElementIdentifier(private val element: Element) {
                         ) {
                             elementList.add(IFrameElement(it.toString(), it.toString()))
                         } else {
-                            if (it.childrenSize() <= 0 && it.hasText()) elementList.add(ParagraphElement(it.toString()))
+                            if (it.childrenSize() <= 0 && it.hasText()) {
+                                if (!embeddedStyleEnabled)
+                                    removeStyle(it)
+                                elementList.add(ParagraphElement(it.toString()))
+                            }
                             extractData(elementList, it.children(), wholeData)
                             // if has text need to be extracted!
                             // todo find a better approach
@@ -163,8 +168,14 @@ class ElementIdentifier(private val element: Element) {
                         ) {
                             extractData(elementList, children)
                             // sometimes <p still has some texts to get...
-                            if (it.hasText()) elementList.add(ParagraphElement(it.text()))
+                            if (it.hasText()) {
+                                if (!embeddedStyleEnabled)
+                                    removeStyle(it)
+                                elementList.add(ParagraphElement(it.text()))
+                            }
                         } else {
+                            if (!embeddedStyleEnabled)
+                                removeStyle(it)
                             elementList.add(ParagraphElement(it.toString()))
                         }
                     }
@@ -200,8 +211,11 @@ class ElementIdentifier(private val element: Element) {
 
                     ElementType.Br -> {
                         // bind it as Paragraph for now
-                        if (it.hasText())
+                        if (it.hasText()) {
+                            if (!embeddedStyleEnabled)
+                                removeStyle(it)
                             elementList.add(ParagraphElement(it.toString()))
+                        }
                     }
 
                     ElementType.Table -> {
@@ -214,6 +228,18 @@ class ElementIdentifier(private val element: Element) {
                 }
             }
             elementList.map { it::class.java.simpleName }
+        }
+
+        private fun removeStyle(it: Element?) {
+            if (it!!.childrenSize() > 0) {
+                for (child in it.children()) {
+                    child.removeClass("style")
+                    child.removeAttr("style")
+                }
+            }
+            it.removeClass("style")
+            it.removeAttr("style")
+
         }
     }
 }
