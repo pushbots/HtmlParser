@@ -25,7 +25,7 @@ val source = """
 """.trimIndent()
 
 HtmlParser.Builder(StringSource(source))
-    .setEmbeddedStyleEnabled(false) // false by default
+    .setEmbeddedStyleEnabled(false) // true by default
     .setCallback(object : HtmlParser.ParserCallbacks {
     override fun onParseFinished(list: List<Element>) {
     list.forEach {
